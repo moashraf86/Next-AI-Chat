@@ -1,12 +1,23 @@
 "use client";
 
 import { useChat } from "ai/react";
+import clsx from "clsx";
 import Markdown from "react-markdown";
+import { useState } from "react";
 
 export default function Chat() {
+  const [isThinking, setIsThinking] = useState(false);
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    onFinish: (response) => console.log(response),
+    onFinish: (response) => {
+      setIsThinking(false);
+      console.log(response.parts);
+    },
   });
+
+  const handleChatSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsThinking(true);
+    handleSubmit(e);
+  };
 
   // Function to process messages and render them accordingly
   const processMessage = (content: string) => {
@@ -18,7 +29,7 @@ export default function Chat() {
         .trim();
       return (
         <>
-          <blockquote className="block italic mb-6 border-l border-l-gray-600 pl-4">
+          <blockquote className="block mb-6 border-l-2 border-l-muted pl-4 text-muted-foreground">
             {thoughtContent.split("\n").map((line, i) => (
               <p key={i} className="mb-2">
                 {line}
@@ -39,16 +50,33 @@ export default function Chat() {
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
       {messages.map((m) => (
-        <div key={m.id} className="mb-4">
-          <div className="font-bold mb-2">
-            {m.role === "user" ? "User: " : "AI: "}
+        <div
+          key={m.id}
+          className={clsx("mb-4", m.role === "user" && "flex justify-end")}
+        >
+          <div
+            className={clsx(
+              m.role === "user" && "py-2 px-3 bg-muted rounded-lg"
+            )}
+          >
+            {processMessage(m.content)}
           </div>
-          {processMessage(m.content)}
         </div>
       ))}
-      <form onSubmit={handleSubmit}>
+
+      {isThinking && (
+        <div className="flex items-center space-x-2 mb-4">
+          <div className="w-5 h-5 border-t-2 border-blue-500 rounded-full animate-spin" />
+          <div className="text-sm text-zinc-500">AI is thinking...</div>
+        </div>
+      )}
+
+      <form
+        onSubmit={handleChatSubmit}
+        className="fixed bottom-0 w-full max-w-md p-2 mb-8 "
+      >
         <input
-          className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
+          className="w-full bg-background flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={input}
           placeholder="Say something..."
           onChange={handleInputChange}
