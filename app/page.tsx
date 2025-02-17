@@ -8,9 +8,8 @@ import { useState } from "react";
 export default function Chat() {
   const [isThinking, setIsThinking] = useState(false);
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    onFinish: (response) => {
+    onResponse: () => {
       setIsThinking(false);
-      console.log(response.parts);
     },
   });
 
@@ -44,15 +43,19 @@ export default function Chat() {
         </>
       );
     }
-    return <Markdown className="whitespace-pre-wrap">{content}</Markdown>;
+    return <Markdown>{content}</Markdown>;
   };
 
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+    <div className="flex flex-col w-full max-w-lg py-24 mx-auto stretch">
       {messages.map((m) => (
         <div
           key={m.id}
-          className={clsx("mb-4", m.role === "user" && "flex justify-end")}
+          className={clsx(
+            "mb-4",
+            m.role === "assistant" && "markdown",
+            m.role === "user" && "flex justify-end"
+          )}
         >
           <div
             className={clsx(
@@ -73,7 +76,7 @@ export default function Chat() {
 
       <form
         onSubmit={handleChatSubmit}
-        className="fixed bottom-0 w-full max-w-md p-2 mb-8 "
+        className="fixed bottom-0 w-full max-w-lg p-2 mb-8 "
       >
         <input
           className="w-full bg-background flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

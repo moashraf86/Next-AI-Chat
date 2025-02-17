@@ -105,18 +105,18 @@ body {
 }
 
 .markdown pre {
-  @apply bg-[#21262b] rounded-md text-sm overflow-auto;
+  @apply bg-[#21262b] rounded-md text-sm overflow-auto mb-4;
 }
 
 .markdown pre code {
-  @apply bg-transparent block w-full text-[#e2e5e9bf] whitespace-pre;
+  @apply bg-transparent block w-full text-[#e2e5e9bf] whitespace-pre p-4;
 }
 .markdown pre p {
   @apply pl-4;
 }
 
 .markdown code {
-  @apply bg-muted text-primary rounded-md pt-1 px-2 text-wrap text-sm;
+  @apply bg-muted text-primary rounded-md py-1 px-2 text-wrap text-sm;
 }
 
 .markdown a {
